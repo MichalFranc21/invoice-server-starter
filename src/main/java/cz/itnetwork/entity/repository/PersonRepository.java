@@ -29,5 +29,4 @@ import java.util.List;
 public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     List<PersonEntity> findByHidden(boolean hidden);
-
 }

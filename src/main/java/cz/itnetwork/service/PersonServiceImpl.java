@@ -25,6 +25,7 @@ import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.mapper.PersonMapper;
 import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.repository.PersonRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -74,18 +75,29 @@ public class PersonServiceImpl implements PersonService {
         return personMapper.toDTO(person);
     }
 
-    // region: Private methods
-    /**
-     * <p>Attempts to fetch a person.</p>
-     * <p>In case a person with the passed [id] doesn't exist a [{@link org.webjars.NotFoundException}] is thrown.</p>
-     *
-     * @param id Person to fetch
-     * @return Fetched entity
-     * @throws org.webjars.NotFoundException In case a person with the passed [id] isn't found
-     */
+    @Override
+    public PersonDTO editPerson(Long personId, PersonDTO personDTO) {
+        try {
+            PersonEntity person = fetchPersonById(personId);
+            person.setHidden(true);
+
+            personRepository.save(person);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        PersonEntity entity = personMapper.toEntity(personDTO);
+        entity = personRepository.save(entity);
+        return personMapper.toDTO(entity);
+
+    }
+
     private PersonEntity fetchPersonById(long id) {
         return personRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Person with id " + id + " wasn't found in the database."));
     }
     // endregion
+
+
+
 }

@@ -77,4 +77,10 @@ public class PersonEntity {
 
     private boolean hidden = false;
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "buyer")
+    List<InvoiceEntity> purchases;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "seller")
+    List<InvoiceEntity> sales;
+
 }
