@@ -15,7 +15,7 @@ public class PersonController {
 
     @PostMapping("/persons")
     public PersonDTO addPerson(@RequestBody PersonDTO personDTO) {
-        return  personService.addPerson(personDTO);
+        return personService.addPerson(personDTO);
     }
 
     @GetMapping("/persons")
@@ -29,13 +29,12 @@ public class PersonController {
     }
 
     @GetMapping("/persons/{personId}")
-         public PersonDTO getPersonById(@PathVariable long personId) {
+    public PersonDTO getPersonById(@PathVariable Long personId) {
         return personService.getPersonById(personId);
-         }
+    }
 
-    @PutMapping({"/persons/{personId}", "/persons/{personId}/"})
+    @PutMapping("/persons/{personId}")
     public PersonDTO editPerson(@PathVariable Long personId, @RequestBody PersonDTO personDTO) {
         return personService.editPerson(personId, personDTO);
     }
 }
-

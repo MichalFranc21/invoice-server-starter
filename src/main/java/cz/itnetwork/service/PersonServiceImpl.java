@@ -25,11 +25,9 @@ import cz.itnetwork.dto.PersonDTO;
 import cz.itnetwork.dto.mapper.PersonMapper;
 import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.repository.PersonRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,9 +41,13 @@ public class PersonServiceImpl implements PersonService {
     private PersonRepository personRepository;
 
     public PersonDTO addPerson(PersonDTO personDTO) {
+        // Převést DTO na entitu
         PersonEntity entity = personMapper.toEntity(personDTO);
+
+        // Uložit entitu do databáze
         entity = personRepository.save(entity);
 
+        // Převést uloženou entitu zpět na DTO a vrátit
         return personMapper.toDTO(entity);
     }
 
