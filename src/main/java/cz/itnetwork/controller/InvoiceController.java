@@ -1,9 +1,11 @@
 package cz.itnetwork.controller;
 
 import cz.itnetwork.dto.InvoiceDTO;
+import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,4 +39,13 @@ public class InvoiceController {
     public InvoiceDTO getInvoiceById(@PathVariable long id) {
         return invoiceService.getInvoiceById(id);
     }
+    @DeleteMapping("/invoices/{id}")
+    public void deleteInvoice(@PathVariable long id){
+        invoiceService.deleteInvoice(id);
+    }
+    @PutMapping("/invoices/{id}")
+    public InvoiceDTO editInvoice(@RequestBody InvoiceDTO invoiceDTO, @PathVariable long id) {
+        return invoiceService.editInvoice(invoiceDTO, id);
+    }
+
 }

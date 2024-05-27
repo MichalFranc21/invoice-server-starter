@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.lang.module.ResolutionException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,5 +64,32 @@ public class InvoiceServiceImpl implements InvoiceService{
         InvoiceEntity invoiceEntity = invoiceRepository.findById(id)
                 .orElseThrow(() -> new ResolutionException("Invoice not found with id " + id));
         return invoiceMapper.toDTO(invoiceEntity);
+    }
+
+    @Override
+    public void deleteInvoice(long id) {
+    invoiceRepository.deleteById(id);
+    }
+
+    @Override
+    public InvoiceDTO editInvoice(InvoiceDTO invoiceDTO, long id) {
+        // Nastavíme ID faktury na základě přijatého argumentu
+        invoiceDTO.setId(id);
+
+        // Získáme fakturu z databáze podle ID
+        InvoiceEntity entity = invoiceRepository.getReferenceById(id);
+
+        // Aktualizujeme údaje faktury pomocí mapperu
+        invoiceMapper.editInvoiceEntity(invoiceDTO, entity);
+
+        // Nastavení prodávajícího a kupujícího do entity faktury
+        entity.setSeller(personRepository.getReferenceById(invoiceDTO.getSeller().getId()));
+        entity.setBuyer(personRepository.getReferenceById(invoiceDTO.getBuyer().getId()));
+
+        // Uložíme aktualizovanou fakturu do databáze
+        InvoiceEntity saved = invoiceRepository.save(entity);
+
+        // Převedeme uloženou fakturu na DTO a vrátíme
+        return invoiceMapper.toDTO(saved);
     }
 }

@@ -32,5 +32,4 @@ public class InvoiceEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private PersonEntity seller;
     private String note;
-
 }

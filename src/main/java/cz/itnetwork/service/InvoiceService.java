@@ -12,4 +12,6 @@ public interface InvoiceService {
     InvoiceDTO getInvoiceById(long id);
     List<InvoiceDTO> getPurchesedInvoices(String identificationNumber);
     List<InvoiceDTO> getSalesInvoices(String identificationNumber);
+    void deleteInvoice(long id);
+    public InvoiceDTO editInvoice(InvoiceDTO invoiceDTO, long id);
 }
