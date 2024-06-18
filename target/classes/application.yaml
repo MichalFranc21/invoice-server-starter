@@ -1,22 +1,22 @@
-spring.datasource:
-  url: jdbc:mysql://localhost/InvoiceDatabase?createDatabaseIfNotExist=true
-  username: root
-  password:
-  driver-class-name: com.mysql.cj.jdbc.Driver
+spring.datasource: # Konfigurace zdroje dat pro připojení k databázi
+    url: jdbc:mysql://localhost/InvoiceDatabase?createDatabaseIfNotExist=true # URL databáze MySQL, kterou se aplikace připojí
+    username: root # Uživatelské jméno pro přihlášení k databázi
+    password: # Heslo pro přihlášení k databázi
+    driver-class-name: com.mysql.cj.jdbc.Driver # Název třídy JDBC ovladače pro MySQL
 
 server:
-  port: 8080
+  port: 8080 # Port, na kterém bude aplikace naslouchat
 
 springdoc:
-  api-docs.path: /api-docs
+  api-docs.path: /api-docs # Cesta, na které bude dostupná dokumentace API
 
-spring:
-  jpa:
-    open-in-view: true
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+spring: # Další konfigurace Spring Framework
+  jpa: # Konfigurace JPA (Java Persistence API)
+    open-in-view: true # Zapnutí funkce OpenEntityManagerInView pro automatické otevírání EntityManageru
+    hibernate: # Konfigurace Hibernate (JPA poskytovatele)
+      ddl-auto: update # Strategie pro generování DDL skriptů (zde aktualizace existujících tabulek)
+    show-sql: true # Zapnutí logování SQL dotazů do konzole
 
-  jackson:
-    mapper:
-      accept-case-insensitive-enums: true
+  jackson: # Konfigurace Jackson JSON mapperu
+    mapper: # Konfigurace mapperu
+      accept-case-insensitive-enums: true # Přijetí enum hodnot bez ohledu na velikost písmen

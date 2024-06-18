@@ -1,26 +1,31 @@
 package cz.itnetwork.service;
 
+import cz.itnetwork.dto.InoviceStatisticsDTO;
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.entity.InvoiceEntity;
 import cz.itnetwork.entity.PersonEntity;
+import cz.itnetwork.entity.filter.InvoiceFilter;
 import cz.itnetwork.entity.repository.InvoiceRepository;
+import cz.itnetwork.entity.repository.InvoiceSpecification;
 import cz.itnetwork.entity.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.lang.module.ResolutionException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class InvoiceServiceImpl implements InvoiceService{
+public class InvoiceServiceImpl implements InvoiceService {
+
     @Autowired
     private InvoiceMapper invoiceMapper;
+
     @Autowired
     private InvoiceRepository invoiceRepository;
+
     @Autowired
     private PersonRepository personRepository;
 
@@ -39,7 +44,7 @@ public class InvoiceServiceImpl implements InvoiceService{
     public List<InvoiceDTO> getAll() {
         return invoiceRepository.findAll()
                 .stream()
-                .map(i -> invoiceMapper.toDTO(i))
+                .map(invoiceMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -48,7 +53,7 @@ public class InvoiceServiceImpl implements InvoiceService{
         return getAll()
                 .stream()
                 .filter(i -> i.getBuyer().getIdentificationNumber().equals(identificationNumber))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -56,7 +61,7 @@ public class InvoiceServiceImpl implements InvoiceService{
         return getAll()
                 .stream()
                 .filter(i -> i.getSeller().getIdentificationNumber().equals(identificationNumber))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -68,28 +73,35 @@ public class InvoiceServiceImpl implements InvoiceService{
 
     @Override
     public void deleteInvoice(long id) {
-    invoiceRepository.deleteById(id);
+        invoiceRepository.deleteById(id);
     }
 
     @Override
     public InvoiceDTO editInvoice(InvoiceDTO invoiceDTO, long id) {
-        // Nastavíme ID faktury na základě přijatého argumentu
         invoiceDTO.setId(id);
-
-        // Získáme fakturu z databáze podle ID
         InvoiceEntity entity = invoiceRepository.getReferenceById(id);
-
-        // Aktualizujeme údaje faktury pomocí mapperu
         invoiceMapper.editInvoiceEntity(invoiceDTO, entity);
-
-        // Nastavení prodávajícího a kupujícího do entity faktury
         entity.setSeller(personRepository.getReferenceById(invoiceDTO.getSeller().getId()));
         entity.setBuyer(personRepository.getReferenceById(invoiceDTO.getBuyer().getId()));
-
-        // Uložíme aktualizovanou fakturu do databáze
         InvoiceEntity saved = invoiceRepository.save(entity);
-
-        // Převedeme uloženou fakturu na DTO a vrátíme
         return invoiceMapper.toDTO(saved);
+    }
+
+    @Override
+    public InoviceStatisticsDTO getStatistics() {
+        InoviceStatisticsDTO stats = new InoviceStatisticsDTO();
+        stats.setCurrentYearSum(invoiceRepository.findCurrentYearSum());
+        stats.setAllTimeSum(invoiceRepository.findAllTimeSum());
+        stats.setInvoicesCount(invoiceRepository.findInvoicesCount());
+        return stats;
+    }
+
+    @Override
+    public List<InvoiceDTO> getAllInvoices(InvoiceFilter invoiceFilter) {
+        InvoiceSpecification invoiceSpecification = new InvoiceSpecification(invoiceFilter);
+        return invoiceRepository.findAll(invoiceSpecification, PageRequest.of(0, invoiceFilter.getLimit()))
+                .stream()
+                .map(invoiceMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

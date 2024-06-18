@@ -7,7 +7,8 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = {PersonMapper.class})
 public interface InvoiceMapper {
+
     InvoiceEntity toEntity(InvoiceDTO source);
     InvoiceDTO toDTO(InvoiceEntity source);
-    void editInvoiceEntity(InvoiceDTO source,@MappingTarget InvoiceEntity target);
+    void editInvoiceEntity(InvoiceDTO source, @MappingTarget InvoiceEntity target);
 }
