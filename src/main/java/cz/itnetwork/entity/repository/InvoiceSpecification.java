@@ -5,7 +5,6 @@ import cz.itnetwork.entity.InvoiceEntity_;
 import cz.itnetwork.entity.filter.InvoiceFilter;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
-
 import java.util.ArrayList;
 import java.util.List;
 

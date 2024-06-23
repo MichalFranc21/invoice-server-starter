@@ -4,7 +4,6 @@ import cz.itnetwork.dto.InoviceStatisticsDTO;
 import cz.itnetwork.dto.InvoiceDTO;
 import cz.itnetwork.dto.mapper.InvoiceMapper;
 import cz.itnetwork.entity.InvoiceEntity;
-import cz.itnetwork.entity.PersonEntity;
 import cz.itnetwork.entity.filter.InvoiceFilter;
 import cz.itnetwork.entity.repository.InvoiceRepository;
 import cz.itnetwork.entity.repository.InvoiceSpecification;
@@ -12,7 +11,6 @@ import cz.itnetwork.entity.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
 import java.lang.module.ResolutionException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,9 +30,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public InvoiceDTO addInvoice(InvoiceDTO invoiceDTO) {
         InvoiceEntity entity = invoiceMapper.toEntity(invoiceDTO);
-        Long buyer = entity.getBuyer().getId();
-        PersonEntity setBuyer = personRepository.getReferenceById(buyer);
-        entity.setBuyer(setBuyer);
+        entity.setBuyer(personRepository.getReferenceById(invoiceDTO.getBuyer().getId()));
         entity.setSeller(personRepository.getReferenceById(invoiceDTO.getSeller().getId()));
         entity = invoiceRepository.save(entity);
         return invoiceMapper.toDTO(entity);
